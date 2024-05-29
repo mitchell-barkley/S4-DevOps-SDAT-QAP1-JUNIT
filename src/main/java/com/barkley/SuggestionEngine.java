@@ -89,17 +89,26 @@ public class SuggestionEngine {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
+        if (args.length == 0) {
             System.out.println("USAGE: " + SuggestionEngine.class.getName() + "<word to generateSuggestions>");
+            return;
         }
-        if (args.length == 1 && args[0].equalsIgnoreCase("?")) {
-            System.out.println("USAGE: " + SuggestionEngine.class.getName() + "<word to generateSuggestions>");
-            System.out.println("Output: A list of suggestions OR empty string if word is generateSuggestions");
+        String word = args[0];
+        if (word.equalsIgnoreCase("?")) {
+            System.out.println("USAGE: " + SuggestionEngine.class.getName() + " <word to generate suggestions>");
+            System.out.println("Output: A list of suggestions OR empty string if word is correctly spelled.");
+            return;
         }
 
         SuggestionEngine suggestionEngine = new SuggestionEngine();
-        suggestionEngine.loadDictionaryData(Paths.get( ClassLoader.getSystemResource("words.txt").getPath()));
+        try {
+            suggestionEngine.loadDictionaryData(Paths.get(ClassLoader.getSystemResource("words.txt").toURI()));
+        } catch (Exception e) {
+            System.err.println("Error loading dictionary file: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
 
-        System.out.println(suggestionEngine.generateSuggestions(args[0]));
+        System.out.println(suggestionEngine.generateSuggestions(word));
     }
 }
