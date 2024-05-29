@@ -66,13 +66,10 @@ public class Employee {
         if (this == o) {
             return true;
         }
-
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         Employee employee = (Employee) o;
-
         return firstname.equals(employee.getFirstName()) && lastname.equals(employee.getLastName());
     }
 

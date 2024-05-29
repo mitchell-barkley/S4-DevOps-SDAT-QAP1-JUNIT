@@ -20,6 +20,7 @@ public class SuggestionEngine {
      *   Specifically the second part which describes how to create a Candidate Model in order to determine a list of
      *   words that the user may be trying to input.
      */
+
     private Stream<String> wordEdits(final String word) {
         Stream<String> deletes    = IntStream.range(0, word.length())  .mapToObj((i) -> word.substring(0, i) + word.substring(i + 1));
         Stream<String> replaces   = IntStream.range(0, word.length())  .boxed().flatMap( (i) -> "abcdefghijklmnopqrstuvwxyz".chars().mapToObj( (c) ->
@@ -30,9 +31,8 @@ public class SuggestionEngine {
         return Stream.of( deletes,replaces,inserts,transposes ).flatMap((x)->x);
     }
 
-    /**
-     * Look up the passed in word in the Map of words loaded from the source file.
-     */
+    // Look for keyword from resources
+
     private Stream<String> known(Stream<String> words) {
         return words.filter( (word) -> getWordSuggestionDB().containsKey(word) );
     }
@@ -43,17 +43,13 @@ public class SuggestionEngine {
      * @param dictionaryFile the Path to the file to be loaded
      * @throws IOException an any file loading problems
      */
+
     public void loadDictionaryData(Path dictionaryFile) throws IOException {
         Stream.of(new String(Files.readAllBytes( dictionaryFile )).toLowerCase().split("\n")).forEach( (word) ->{
             getWordSuggestionDB().compute( word, (k, v) -> v == null ? 1 : v + 1  );
         });
     }
 
-    /**
-     * Will generate a list of suggested corrections, limited by the top 10 most likely for the given word.
-     * @param word the word to find correction suggestions for
-     * @return a String of words delimited by '\n' or an empty string if word is correct
-     */
     public String generateSuggestions(String word) {
         if (getWordSuggestionDB().containsKey(word)) {
             return "";

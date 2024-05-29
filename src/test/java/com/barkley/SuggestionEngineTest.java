@@ -6,13 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 @ExtendWith(MockitoExtension.class)
 public class SuggestionEngineTest {
@@ -24,15 +21,12 @@ public class SuggestionEngineTest {
     @Test
     public void testGenerateSuggestions() throws Exception {
         suggestionEngine.loadDictionaryData( Paths.get( ClassLoader.getSystemResource("words.txt").getPath()));
-
-//        Assertions.assertTrue(testInstanceSame);
         Assertions.assertTrue(suggestionEngine.generateSuggestions("hellw").contains("hello"));
     }
 
     @Test
     public void testGenerateSuggestionsFail() throws Exception {
         suggestionEngine.loadDictionaryData( Paths.get( ClassLoader.getSystemResource("words.txt").getPath()));
-
         boolean testInstanceSame = true;
         Assertions.assertTrue(testInstanceSame);
         Assertions.assertFalse(suggestionEngine.generateSuggestions("hello").contains("hello"));
@@ -41,15 +35,10 @@ public class SuggestionEngineTest {
     @Test
     public void testSuggestionsAsMock() {
         Map<String,Integer> wordMapForTest = new HashMap<>();
-
         wordMapForTest.put("test", 1);
-
         Mockito.when(mockSuggestionDB.getWordMap()).thenReturn(wordMapForTest);
-
         suggestionEngine.setWordSuggestionDB(mockSuggestionDB);
-
         Assertions.assertFalse(suggestionEngine.generateSuggestions("test").contains("test"));
-
         Assertions.assertTrue(suggestionEngine.generateSuggestions("tes").contains("test"));
     }
 
@@ -58,6 +47,7 @@ public class SuggestionEngineTest {
         suggestionEngine.loadDictionaryData(Paths.get(ClassLoader.getSystemResource("words.txt").getPath()));
         assertEquals("", suggestionEngine.generateSuggestions("hello"));  // Assuming "hello" is in the dictionary
     }
+
     @Test
     public void testGenerateTop10Suggestions() throws Exception {
         suggestionEngine.loadDictionaryData(Paths.get(ClassLoader.getSystemResource("words.txt").getPath()));
